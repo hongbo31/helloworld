@@ -54,3 +54,28 @@ Traceback (most recent call last):
 AttributeError: 'NoneType' object has no attribute 'find_element'
 
 Process finished with exit code 1
+
+
+-------------------------------------------------------------------------改过之后--------------------------------------------
+
+ # 点击首页右下角的all，刷新为全部分类
+    def refresh_category(self):
+        self.driver.current_driver.switch_to.frame(0)
+        self.driver.current_driver.find_element("all").click()
+        
+        -----------------------------------------报错-------------------------------
+        
+        Traceback (most recent call last):
+  File "D:/MLUIproject-master/page/homepage.py", line 37, in <module>
+    homePage.refresh_category()
+  File "D:/MLUIproject-master/page/homepage.py", line 22, in refresh_category
+    self.driver.current_driver.find_element("all").click()
+  File "C:\Python36\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 978, in find_element
+    'value': value})['value']
+  File "C:\Python36\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 321, in execute
+    self.error_handler.check_response(response)
+  File "C:\Python36\lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 242, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.WebDriverException: Message: invalid argument: 'value' must be a string
+  (Session info: chrome=74.0.3729.169)
+  (Driver info: chromedriver=2.37.544315 (730aa6a5fdba159ac9f4c1e8cbc59bf1b5ce12b7),platform=Windows NT 6.1.7601 SP1 x86_64)
