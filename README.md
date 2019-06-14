@@ -91,6 +91,9 @@ selenium.common.exceptions.WebDriverException: Message: invalid argument: 'value
 
 def refresh_category(self):
         self.driver.current_driver.switch_to.frame(0)
+        
         self.driver.current_driver.switch_to.frame("hwIframe2")
+        
         self.driver.current_driver.switch_to.frame(0)
+        
         self.driver.current_driver.find_element("all").click()
