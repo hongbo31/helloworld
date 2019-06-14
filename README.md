@@ -87,3 +87,10 @@ selenium.common.exceptions.WebDriverException: Message: invalid argument: 'value
         <pathType>xpath</pathType>
         <pathValue>/html/body/div/dl[8]/dt/a</pathValue>
     </element>
+
+
+def refresh_category(self):
+        self.driver.current_driver.switch_to.frame(0)
+        self.driver.current_driver.switch_to.frame("hwIframe2")
+        self.driver.current_driver.switch_to.frame(0)
+        self.driver.current_driver.find_element("all").click()
