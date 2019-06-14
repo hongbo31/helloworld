@@ -30,12 +30,19 @@ class HomePage(BasePage):
 
 if __name__ == '__main__':
     homePage = HomePage()
+    
     homePage.link_home_page(1)
+    
     print("a")
+    
     homePage.refresh_category()
+    
     print("b")
+    
     homePage.close_current_page()
+    
     print("c")
+    
 给我重点看看refresh_category这个方法写的问题在哪，找不到all这个元素，报错是下面：
 C:\Python36\python.exe D:/MLUIproject-master/page/homepage.py
 a
