@@ -79,3 +79,11 @@ Process finished with exit code 1
 selenium.common.exceptions.WebDriverException: Message: invalid argument: 'value' must be a string
   (Session info: chrome=74.0.3729.169)
   (Driver info: chromedriver=2.37.544315 (730aa6a5fdba159ac9f4c1e8cbc59bf1b5ce12b7),platform=Windows NT 6.1.7601 SP1 x86_64)
+    
+    -------------------------------------all 的配置---------------------------------
+    
+    <element page = "enterprise 测试前台">
+        <name>all</name>
+        <pathType>xpath</pathType>
+        <pathValue>/html/body/div/dl[8]/dt/a</pathValue>
+    </element>
