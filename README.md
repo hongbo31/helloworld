@@ -49,3 +49,17 @@ Traceback (most recent call last):
 ImportError: cannot import name 'BasePage'
 
 Process finished with exit code 1
+
+22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+from common.driver import Driver
+
+
+class BasePage:
+
+    def __init__(self, web=1):
+        self.current_page = None
+        self.driver = Driver(web)
+
+    def link_page(self,url):
+        self.driver.current_driver.get(url)
+        self.driver.current_driver.maximize_window()
