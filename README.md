@@ -138,12 +138,21 @@ Process finished with exit code 1
 -------------------------current driver--------------------
 
 class Driver:
+
     def __init__(self, web=1):
+    
         self.elementRead = ElementsRead()
+        
         if web == 1:
+        
             self.current_driver = webdriver.Chrome()
+            
         elif web == 2:
+        
             self.current_driver = webdriver.Ie()
+            
         elif web == 3:
+        
             self.current_driver = webdriver.Firefox()
+            
         self.action = ActionChains(self.current_driver)
