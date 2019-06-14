@@ -1,6 +1,3 @@
-# helloworld
-hello world!!!!
-import selenium
 from common.basepage import BasePage
 from common.driver import Driver
 
@@ -16,12 +13,12 @@ class HomePage(BasePage):
             self.link_page("http://support.huawei.com/enrobot")  # 企业英文生产前台
         elif website == 4:
             self.link_page("http://support.huawei.com/iknow")  # 企业英文生产前台（对外）
-        return website
 
 
     # 点击首页右下角的all，刷新为全部分类
     def refresh_category(self):
         self.driver.current_driver.switch_to.frame(0).find_element("all").click()
+
 """
     # 从首页进入登录页面
     def link_signin_page(self):
@@ -34,32 +31,19 @@ class HomePage(BasePage):
 if __name__ == '__main__':
     homePage = HomePage()
     homePage.link_home_page(1)
+    print("a")
     homePage.refresh_category()
-
+    print("b")
     homePage.close_current_page()
-
+    print("c")
+给我重点看看refresh_category这个方法写的问题在哪，找不到all这个元素，报错是下面：
 C:\Python36\python.exe D:/MLUIproject-master/page/homepage.py
+a
 Traceback (most recent call last):
-  File "D:/MLUIproject-master/page/homepage.py", line 2, in <module>
-    from common.basepage import BasePage
-  File "D:\MLUIproject-master\common\basepage.py", line 2, in <module>
-    from page.homepage import HomePage
-  File "D:\MLUIproject-master\page\homepage.py", line 2, in <module>
-    from common.basepage import BasePage
-ImportError: cannot import name 'BasePage'
+  File "D:/MLUIproject-master/page/homepage.py", line 36, in <module>
+    homePage.refresh_category()
+  File "D:/MLUIproject-master/page/homepage.py", line 21, in refresh_category
+    self.driver.current_driver.switch_to.frame(0).find_element("all").click()
+AttributeError: 'NoneType' object has no attribute 'find_element'
 
 Process finished with exit code 1
-
-22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
-from common.driver import Driver
-
-
-class BasePage:
-
-    def __init__(self, web=1):
-        self.current_page = None
-        self.driver = Driver(web)
-
-    def link_page(self,url):
-        self.driver.current_driver.get(url)
-        self.driver.current_driver.maximize_window()
