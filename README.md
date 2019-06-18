@@ -325,3 +325,82 @@ if __name__ == '__main__':
     print(r1.get_all_elements())
     print(r1.get_all_elements_name())
 
+--------------config.xml--------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+    <element>
+        <name>百度搜索输入框</name>
+        <pathType>id</pathType>
+        <pathValue>kw</pathValue>
+    </element>
+    <element page = "首页">
+        <name>首页图标</name>
+        <pathType>class_name</pathType>
+        <pathValue>logo-cont</pathValue>
+    </element>
+    <element page = "首页">
+        <name>首页弹窗</name>
+        <pathType>xpath</pathType>
+        <pathValue>.//*[@id='modal']</pathValue>
+    </element>
+    <element page = "首页">
+        <name>首页年龄弹窗确认</name>
+        <pathType>xpath</pathType>
+        <pathValue>.//*[@id='modal']/div[2]/a</pathValue>
+    </element>
+    <element page ="首页">
+        <name>首页signin按钮</name>
+        <pathType>class_name</pathType>
+        <pathValue>go-login</pathValue>
+    </element>
+    <element page ="首页">
+        <name>首页signup按钮</name>
+        <pathType>class_name</pathType>
+        <pathValue>go-sign</pathValue>
+    </element>
+    <element page ="登录页">
+        <name>用户名输入框</name>
+        <pathType>name</pathType>
+        <pathValue>email</pathValue>
+    </element>
+    <element page = "登录页">
+        <name>密码输入框</name>
+        <pathType>name</pathType>
+        <pathValue>password</pathValue>
+    </element>
+     <element page = "登录页">
+        <name>登录提交按钮</name>
+        <pathType>xpath</pathType>
+        <pathValue>.//*[@id='wrapper']/div[2]/div[2]/div[2]/div[7]</pathValue>
+    </element>
+    <element page = "enterprise 测试前台">
+        <name>enterprise access</name>
+        <pathType>xpath</pathType>
+        <pathValue>//*[@id="datacom"]/a[1]</pathValue>
+    </element>
+    <element page = "enterprise 测试前台">
+        <name>all</name>
+        <pathType>xpath</pathType>
+        <pathValue>/html/body/div/dl[8]/dt/a</pathValue>
+    </element>
+    <element page = "enterprise 测试前台">
+        <name>login</name>
+        <pathType>id</pathType>
+        <pathValue>loginBtn</pathValue>
+    </element>
+    <element page = "enterprise 测试前台">
+        <name>logout</name>
+        <pathType>id</pathType>
+        <pathValue>logoutBtn</pathValue>
+    </element>
+     <element page = "enterprise 测试前台">
+        <name>loginWelcome</name>
+        <pathType>xpath</pathType>
+        <pathValue>//*[@id="outputArea"]/dl[1]/dd/div/div</pathValue>
+    </element>
+     <element page = "enterprise 测试前台">
+        <name>logoutWelcome</name>
+        <pathType>xpath</pathType>
+        <pathValue>//*[@id="outputArea"]/dl[1]/dd/div/p</pathValue>
+    </element>
+</page>
