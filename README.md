@@ -49,7 +49,9 @@ if __name__ == '__main__':
     
     C:\Python36\python.exe D:/MLUIproject-master/page/homepage.py
 a
+
 b
+
 c
 
 Process finished with exit code 0
