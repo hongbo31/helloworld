@@ -1,3 +1,4 @@
+------------------------test001----------------------------
 from selenium import webdriver
 
 from common.basepage import BasePage
@@ -96,3 +97,231 @@ if __name__ == '__main__':
     print("b")
     homePage.close_current_page()
     print("c")
+    
+    
+    --------------------------basepage------------------------------
+    from common.driver import Driver
+
+
+class BasePage:
+
+    def __init__(self, web=1):
+        self.current_page = None
+        self.driver = Driver(web)
+
+    def link_page(self,url):
+        self.driver.current_driver.get(url)
+        self.driver.current_driver.maximize_window()
+
+    # 页面前进
+    def forward_page(self):
+        self.driver.forward()
+
+    # 页面回退
+    def back_page(self):
+        self.driver.back()
+
+    # 返回当前页面的url
+    def get_current_url(self):
+        return self.driver.current_driver.current_url
+
+    # 返回当前页面的title
+    def get_current_title(self):
+        return self.driver.current_driver.title
+
+    # 获取当前窗口的handle
+    def get_current_window_handle(self):
+        return self.driver.current_driver.current_window_handles
+
+    # 获取所有窗口的handle
+    def get_windows_handles(self):
+        return self.driver.current_driver.window_handles
+
+    # 跳转到iframe页面， 可传参数name，id，如果iframe没有这个属性的话，可以用index或者element来定位
+    def switch_to_iframe(self,index=0):
+        self.driver.current_driver.switch_to.frame()
+
+    # 回到原来的iframe页面
+    def switch_to_back_default_iframe(self):
+        self.driver.current_driver.switch_to.default_content()
+
+    # 首页出现18岁年龄确认弹窗，关闭弹窗
+    """
+    def close_age_alert(self):
+        self.driver.find_element("首页年龄弹窗确认").click()
+    """
+    #关闭浏览器
+    def close_current_page(self):
+        self.driver.close_browser()
+
+if __name__ == '__main__':
+    enrobotpage = BasePage()
+    enrobotpage.driver.open_browser("http://www.multilotto.com/en")
+    enrobotpage.driver.find_element("首页弹窗确认").click()
+    enrobotpage.link_page()
+
+
+------------------------driver---------------------------
+from selenium import webdriver
+from common.elementRead import ElementsRead
+from selenium.webdriver.common.action_chains import ActionChains
+
+import time
+
+
+class Driver:
+    def __init__(self, web=1):
+        self.elementRead = ElementsRead()
+        if web == 1:
+            self.current_driver = webdriver.Chrome()
+        elif web == 2:
+            self.current_driver = webdriver.Ie()
+        elif web == 3:
+            self.current_driver = webdriver.Firefox()
+        self.action = ActionChains(self.current_driver)
+
+    #打开浏览器，输入url，然后最大化
+    def open_browser(self, url):
+        self.current_driver.maximize_window()
+        self.current_driver.get(url)
+        return self.current_driver
+
+    def getwindow_size(self):
+        self.current_driver.get_window_size()
+
+    def setwindow_size(self, width, height, windowHandle='current'):
+        self.current_driver.set_window_size(width, height, windowHandle)
+
+    def close_browser(self):
+        self.current_driver.quit()
+
+    def find_element(self, name=None):
+        pathType = self.elementRead.getPathType(name)
+        pathValue = self.elementRead.getPathValue(name)
+        if pathType.lower() == 'id':
+            return self.current_driver.find_element_by_id(pathValue)
+        elif pathType.lower() == 'class_name':
+            return self.current_driver.find_element_by_class_name(pathValue)
+        elif pathType.lower() == 'name':
+            return self.current_driver.find_element_by_name(pathValue)
+        elif pathType.lower() == 'css_selector':
+            return self.current_driver.find_element_by_css_selector(pathValue)
+        elif pathType.lower() == 'xpath':
+            return self.current_driver.find_element_by_xpath(pathValue)
+        elif pathType.lower() == 'link_text':
+            return self.current_driver.find_element_by_link_text(pathValue)
+        elif pathType.lower() == 'tag_name':
+            return self.current_driver.find_element_by_tag_name(pathValue)
+        elif pathType.lower() == 'partial_link_text':
+            return self.current_driver.find_element_by_partial_link_text(pathValue)
+
+    def find_elements(self, name=None):
+        pathType = self.elementRead.getPathType(name)
+        pathValue = self.elementRead.getPathValue(name)
+        if pathType == 'id':
+            return self.current_driver.find_elements_by_id(pathValue)
+        elif pathType == 'class_name':
+            return self.current_driver.find_elements_by_class_name(pathValue)
+        elif pathType == 'name':
+            return self.current_driver.find_elements_by_name(pathValue)
+        elif pathType == 'css_selector':
+            return self.current_driver.find_elements_by_css_selector(pathValue)
+        elif pathType == 'xpath':
+            return self.current_driver.find_elements_by_xpath(pathValue)
+        elif pathType == 'link_text':
+            return self.current_driver.find_elements_by_link_text(pathValue)
+        elif pathType == 'tag_name':
+            return self.current_driver.find_elements_by_tag_name(pathValue)
+        elif pathType == 'partial_link_text':
+            return self.current_driver.find_elements_by_partial_link_text(pathValue)
+
+    def element_is_exist(self, name):
+        if len(self.find_elements(name)) == 0:
+            return False
+        return True
+
+    def alter(self):
+        return self.current_driver.switch_to.alert()
+
+    def is_alter_present(self):
+        try:
+            self.current_driver.switch_to.alert()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+
+    # 鼠标右键
+    def right_click(self, element_name=None):
+        ac = ActionChains(self.current_driver)
+        return ac.context_click(self.find_element(element_name)).perform()
+
+    def forward(self):
+        self.current_driver.forward()
+
+    def back(self):
+        self.current_driver.back()
+if __name__ == '__main__':
+    dr = Driver(1)
+    dr.open_browser('http://www.multilotto.com/en')
+    time.sleep(2)
+    #dr.find_element("百度搜索输入框").send_keys("haha")
+    print(dr.is_alter_present())
+    dr.find_element("首页弹窗确认").click()
+    time.sleep(10)
+    print(dr.is_alter_present())
+    dr.find_element("首页图标").click()
+    #dr.close_brwser()
+    
+    --------------------------elementread--------------------
+    import xml.etree.cElementTree as MyElementTree
+
+
+class ElementsRead:
+
+    def __init__(self):
+        xml_file_path = 'D:\\MLUIproject-master\\testFile\\config.xml'  # 文件路径
+        self.tree = MyElementTree.parse(xml_file_path)
+        self.root = self.tree.getroot()
+
+    # 获取所有元素name，type，value，返回一个二维列表
+    def get_all_elements(self):
+        elements = []
+        for children in self.root.findall('element'):
+            name = children.find('name').text
+            path_type = children.find('pathType').text
+            path_value = children.find('pathValue').text
+            t = [name, path_type, path_value]
+            elements.append(t)
+        return elements
+
+        # 获取所有元素的name， 返回一个list
+    def get_all_elements_name(self):
+        temp_list = ElementsRead().get_all_elements()
+        name_list = []
+        for i in temp_list:
+            name = i[0]
+            name_list.append(name)
+        return name_list
+
+        # 根据元素的name，返回元素的定位方式path，如果元素不存在则返回none
+    def getPathType(self, name):
+        path_type_list = ElementsRead().get_all_elements()
+        for i in path_type_list:
+            if i[0] == name:
+                return i[1]
+
+        # 根据xml文件的name， 返回元素定位的value，如果元素不存在则返回none
+    def getPathValue(self, name):
+        path_value_list = ElementsRead().get_all_elements()
+        for i in path_value_list:
+            if i[0] == name:
+                return i[2]
+
+
+if __name__ == '__main__':
+    r1 = ElementsRead()
+    print(r1.get_all_elements())
+    print(r1.get_all_elements_name())
+
