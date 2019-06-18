@@ -41,7 +41,7 @@ elif status_login == False:
 
     try:
     
-        assert "Log in" not in welcome_content_login.text
+        assert "Log in" not in welcome_content_logout.text
         
         print("登录，欢迎语内容正确")
     except Exception:
