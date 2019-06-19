@@ -9,11 +9,15 @@ import unittest
 from time import sleep
 
 # test001:欢迎语是否推送,以及内容的正确性
-class Test001(unittest.TestCase):
-    def __init__(self):
-        # 实例化一个HomePage对象,定义为Test001的属性
-        self.test001 = HomePage()
 
+class Test001(unittest.TestCase):
+
+    def __init__(self):
+    
+        # 实例化一个HomePage对象,定义为Test001的属性
+        
+        self.test001 = HomePage()
+   
     def setUp(self):
         self.log = Log()
         self.log.info("测试开始")
