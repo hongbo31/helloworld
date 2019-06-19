@@ -1,21 +1,26 @@
 ------------------------test001----------------------------
 from selenium import webdriver
+
 from common.basepage import BasePage
+
 from common.driver import Driver
+
 from common.elementRead import ElementsRead
+
 from page.homepage import HomePage
+
 from common.log import Log
+
 import unittest
+
 from time import sleep
 
 # test001:欢迎语是否推送,以及内容的正确性
-
 class Test001(unittest.TestCase):
+    test001 = HomePage()
 
-        
-    self.test001 = HomePage()
-   
     def setUp(self):
+        # 实例化一个HomePage对象,定义为Test001的属性
         self.log = Log()
         self.log.info("测试开始")
 
@@ -25,14 +30,14 @@ class Test001(unittest.TestCase):
 
         # 获取登录状态（text = login为未登录，text = logout 为已登录）
         status_login = self.test001.driver.element_is_exist("login")
-        
+
         status_logout = self.test001.driver.element_is_exist("logout")
 
         # 获取欢迎语内容
         sleep(3)
-        
+
         self.test001.switch_to_iframe(0)
-        
+
         self.test001.switch_to_iframe("hwIframe2")
 
         welcome_content_login = self.test001.driver.find_element("loginWelcome").text
@@ -43,14 +48,14 @@ class Test001(unittest.TestCase):
 
         if status_login == True:
             try:
-                assertIn("Log in", welcome_content_login)
+                self.assertIn("Log in", welcome_content_login)
                 print("未登录，欢迎语内容正确")
             except Exception:
                 print("未登录，欢迎语内容错误")
 
         elif status_login == False:
             try:
-                assertNotIn("Log in", welcome_content_logout)
+                self.assertNotIn("Log in", welcome_content_logout)
                 print("登录，欢迎语内容正确")
             except Exception:
                 print("登录，欢迎语内容错误")
@@ -58,13 +63,12 @@ class Test001(unittest.TestCase):
     def tearDown(self):
         self.log.info('结束测试')
         sleep(2)
-        self.close_browser()
+        self.test001.close_current_page()
+
+if __name__ == '__main__':
+    unittest.main.runTests()
 
 
-
-
-        
-        
         
         ------------------------homepage---------------------------
         
