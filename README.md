@@ -12,11 +12,8 @@ from time import sleep
 
 class Test001(unittest.TestCase):
 
-    def __init__(self):
-    
-        # 实例化一个HomePage对象,定义为Test001的属性
         
-        self.test001 = HomePage()
+    self.test001 = HomePage()
    
     def setUp(self):
         self.log = Log()
