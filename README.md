@@ -4,57 +4,62 @@ from common.basepage import BasePage
 from common.driver import Driver
 from common.elementRead import ElementsRead
 from page.homepage import HomePage
+from common.log import Log
+import unittest
 from time import sleep
 
 # test001:欢迎语是否推送,以及内容的正确性
-# 实例化一个对象
-test001 = HomePage()
+class Test001(unittest.TestCase):
+    def __init__(self):
+        # 实例化一个HomePage对象,定义为Test001的属性
+        self.test001 = HomePage()
 
-# 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
-test001.link_home_page(4)
+    def setUp(self):
+        self.log = Log()
+        self.log.info("测试开始")
 
-# 获取登录状态（text = login为未登录，text = logout 为已登录）
-status_login = test001.driver.element_is_exist("login")
+    def run_001(self):
+        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
+        self.test001.link_home_page(4)
 
-status_logout = test001.driver.element_is_exist("logout")
-
-# 获取欢迎语内容
-sleep(3)
-
-test001.switch_to_iframe(0)
-
-test001.switch_to_iframe("hwIframe2")
-
-welcome_content_login = test001.driver.find_element("loginWelcome").text
-
-print(welcome_content_login)
-
-welcome_content_logout = test001.driver.find_element("logoutWelcome").text
-
-if status_login == True:
-
-    try:
-        assert "Log in" in welcome_content_login.text
+        # 获取登录状态（text = login为未登录，text = logout 为已登录）
+        status_login = self.test001.driver.element_is_exist("login")
         
-        print("未登录，欢迎语内容正确")
+        status_logout = self.test001.driver.element_is_exist("logout")
+
+        # 获取欢迎语内容
+        sleep(3)
         
-    except Exception:
-    
-        print("未登录，欢迎语内容错误")
-
-elif status_login == False:
-
-    try:
-        assert "Log in" not in welcome_content_logout.text
+        self.test001.switch_to_iframe(0)
         
-        print("登录，欢迎语内容正确")
-        
-    except Exception:
-    
-        print("登录，欢迎语内容错误")
+        self.test001.switch_to_iframe("hwIframe2")
+
+        welcome_content_login = self.test001.driver.find_element("loginWelcome").text
+
+        print(welcome_content_login)
+
+        welcome_content_logout = self.test001.driver.find_element("logoutWelcome").text
+
+        if status_login == True:
+            try:
+                assertIn("Log in", welcome_content_login)
+                print("未登录，欢迎语内容正确")
+            except Exception:
+                print("未登录，欢迎语内容错误")
+
+        elif status_login == False:
+            try:
+                assertNotIn("Log in", welcome_content_logout)
+                print("登录，欢迎语内容正确")
+            except Exception:
+                print("登录，欢迎语内容错误")
+
+    def tearDown(self):
+        self.log.info('结束测试')
+        sleep(2)
+        self.close_browser()
 
 
-test001.close_current_page()
 
 
         
