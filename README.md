@@ -1,18 +1,11 @@
 ------------------------test001----------------------------
 from selenium import webdriver
-
 from common.basepage import BasePage
-
 from common.driver import Driver
-
 from common.elementRead import ElementsRead
-
 from page.homepage import HomePage
-
 from common.log import Log
-
 import unittest
-
 from time import sleep
 
 # test001:欢迎语是否推送,以及内容的正确性
@@ -24,19 +17,22 @@ class Test001(unittest.TestCase):
         self.log = Log()
         self.log.info("测试开始")
 
-    def run_001(self):
+    def test_001(self):
         # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
         self.test001.link_home_page(4)
 
         # 获取登录状态（text = login为未登录，text = logout 为已登录）
+        self.test001.driver.current_driver.switch_to.frame(0)
+        self.test001.driver.current_driver.switch_to.frame("hwIframe1")
         status_login = self.test001.driver.element_is_exist("login")
 
-        status_logout = self.test001.driver.element_is_exist("logout")
+        # 跳出iframe
+        self.test001.switch_to_back_default_iframe()
 
         # 获取欢迎语内容
         sleep(3)
 
-        self.test001.switch_to_iframe(0)
+        self.test001.switch_to_iframe(0) 
 
         self.test001.switch_to_iframe("hwIframe2")
 
@@ -66,7 +62,26 @@ class Test001(unittest.TestCase):
         self.test001.close_current_page()
 
 if __name__ == '__main__':
-    unittest.main.runTests()
+    unittest.main()
+
+----------------控制台---
+C:\Python36\python.exe D:/MLUIproject-master/testCase/test001.py
+[2019-06-19 12:05:44,424] - log.py] - INFO: 测试开始
+Hello. I am iKnow. To help me better answer your questions, please follow the steps below.
+1. Log in.
+2. Select a product category on the right side of the screen.
+3. Ask a question using as few words as possible.
+[2019-06-19 12:05:48,192] - log.py] - INFO: 结束测试
+未登录，欢迎语内容正确
+.
+----------------------------------------------------------------------
+Ran 1 test in 8.061s
+
+OK
+
+Process finished with exit code 0
+
+
 
 
         
