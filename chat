@@ -1,1 +1,12 @@
 question:how do i describe the elastic ip address service on serviceCenter++standardQuestion:How do I describe the elastic IP address service on ServiceCenter++content:[Cloud Computing] How do I describe the elastic IP address service on ServiceCenter++question:How to configure MUX VLAN on S series switch++standardQuestion:How to configure MUX VLAN on S series switch++content:[Campus Switch] How to configure MUX VLAN on S series switch++question:What are the application scenarios of ManageOne operation networking and O&M networking++standardQuestion:What are the application scenarios of ManageOne operation networking and O&M networking++content:What are the application scenarios of ManageOne operation networking and O&M networking++
+要求：把question，standardQuestion，和content做成excel表格中的3列
+参考：BeanShell PostProcessor脚本内容：
+FileOutputStream fps=new FileOutputStream("C:/Users/cwx628476/Desktop/123.txt",true);
+OutputStreamWriter osw=new OutputStreamWriter(fps);
+BufferedWriter bw=new BufferedWriter(osw);
+
+bw.append("question:${question}++standardQuestion:${standardQuestion}++content:${content}++");
+
+if(bw!=null){bw.close();}
+if(osw!=null){osw.close();}
+if(fps!=null){fps.close();}
