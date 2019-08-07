@@ -98,3 +98,5 @@ if(osw!=null){osw.close();}
 if(fps!=null){fps.close();}
 
 另外还有，响应断言，聚合报告，查看结果树
+
+jmeter -n -t D:\xingnengTest\AILA压力测试.jmx -l D:\xingnengTest\test_result\100bingfa.jtl -e -o D:\xingnengTest\test_report
