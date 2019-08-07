@@ -99,4 +99,19 @@ if(fps!=null){fps.close();}
 
 另外还有，响应断言，聚合报告，查看结果树
 
-jmeter -n -t D:\xingnengTest\AILA压力测试.jmx -l D:\xingnengTest\test_result\100bingfa.jtl -e -o D:\xingnengTest\test_report
+1.CMD命令驱动脚本：jmeter -n -t D:\xingnengTest\AILA压力测试.jmx -l D:\xingnengTest\test_result\100bingfa.jtl -e -o D:\xingnengTest\test_report
+2.函数助手从csv文件读取参数：
+${__CSVRead(C:\Users\rwx628477\Desktop\test1.csv,1)}${__CSVRead(C:\Users\rwx628477\Desktop\test1.csv,next)}
+注意，使用函数助手的时候，需要复制一遍在后面，并将1改为next，才会循环去读，直接使用函数助手时，仅仅读取第一行
+3.csv数据文件设置
+文件名：路径
+文件编码：GB2312
+变量名称：query
+忽略首行：false
+分隔符：，
+是否允许带引号：true
+遇到文件结束符再次循环：true
+遇到文件结束符停止线程：false
+线程共享模式：所有现场
+
+
