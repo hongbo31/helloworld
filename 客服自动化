@@ -188,7 +188,7 @@ if __name__ == '__main__':
     dr.find_element("首页图标").click()
     #dr.close_brwser()
     
-   ----------------------1.3---log/elementRead------------------------
+   ----------------------1.3---common/elementRead------------------------
    
    import xml.etree.cElementTree as MyElementTree
 
@@ -241,8 +241,248 @@ if __name__ == '__main__':
     print(r1.get_all_elements_name())
 
 
-----------------------1.4---log/log------------------------
+----------------------1.4---common/readconfig------------------------
 
+from selenium import webdriver
+from common.elementRead import ElementsRead
+from selenium.webdriver.common.action_chains import ActionChains
+
+import time
+
+
+class Driver:
+    def __init__(self, web=1):
+        self.elementRead = ElementsRead()
+        if web == 1:
+            self.current_driver = webdriver.Chrome()
+        elif web == 2:
+            self.current_driver = webdriver.Ie()
+        elif web == 3:
+            self.current_driver = webdriver.Firefox()
+        self.action = ActionChains(self.current_driver)
+
+    #打开浏览器，输入url，然后最大化
+    def open_browser(self, url):
+        self.current_driver.maximize_window()
+        self.current_driver.get(url)
+        return self.current_driver
+
+    def getwindow_size(self):
+        self.current_driver.get_window_size()
+
+    def setwindow_size(self, width, height, windowHandle='current'):
+        self.current_driver.set_window_size(width, height, windowHandle)
+
+    def close_browser(self):
+        self.current_driver.quit()
+
+    def find_element(self, name=None):
+        pathType = self.elementRead.getPathType(name)
+        pathValue = self.elementRead.getPathValue(name)
+        if pathType.lower() == 'id':
+            return self.current_driver.find_element_by_id(pathValue)
+        elif pathType.lower() == 'class_name':
+            return self.current_driver.find_element_by_class_name(pathValue)
+        elif pathType.lower() == 'name':
+            return self.current_driver.find_element_by_name(pathValue)
+        elif pathType.lower() == 'css_selector':
+            return self.current_driver.find_element_by_css_selector(pathValue)
+        elif pathType.lower() == 'xpath':
+            return self.current_driver.find_element_by_xpath(pathValue)
+        elif pathType.lower() == 'link_text':
+            return self.current_driver.find_element_by_link_text(pathValue)
+        elif pathType.lower() == 'tag_name':
+            return self.current_driver.find_element_by_tag_name(pathValue)
+        elif pathType.lower() == 'partial_link_text':
+            return self.current_driver.find_element_by_partial_link_text(pathValue)
+
+    def find_elements(self, name=None):
+        pathType = self.elementRead.getPathType(name)
+        pathValue = self.elementRead.getPathValue(name)
+        if pathType == 'id':
+            return self.current_driver.find_elements_by_id(pathValue)
+        elif pathType == 'class_name':
+            return self.current_driver.find_elements_by_class_name(pathValue)
+        elif pathType == 'name':
+            return self.current_driver.find_elements_by_name(pathValue)
+        elif pathType == 'css_selector':
+            return self.current_driver.find_elements_by_css_selector(pathValue)
+        elif pathType == 'xpath':
+            return self.current_driver.find_elements_by_xpath(pathValue)
+        elif pathType == 'link_text':
+            return self.current_driver.find_elements_by_link_text(pathValue)
+        elif pathType == 'tag_name':
+            return self.current_driver.find_elements_by_tag_name(pathValue)
+        elif pathType == 'partial_link_text':
+            return self.current_driver.find_elements_by_partial_link_text(pathValue)
+
+    def element_is_exist(self, name):
+        if len(self.find_elements(name)) == 0:
+            return False
+        return True
+
+    def alter(self):
+        return self.current_driver.switch_to.alert()
+
+    def is_alter_present(self):
+        try:
+            self.current_driver.switch_to.alert()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+
+    # 鼠标右键
+    def right_click(self, element_name=None):
+        ac = ActionChains(self.current_driver)
+        return ac.context_click(self.find_element(element_name)).perform()
+
+    def forward(self):
+        self.current_driver.forward()
+
+    def back(self):
+        self.current_driver.back()
+if __name__ == '__main__':
+    dr = Driver(1)
+    dr.open_browser('http://www.multilotto.com/en')
+    time.sleep(2)
+    #dr.find_element("百度搜索输入框").send_keys("haha")
+    print(dr.is_alter_present())
+    dr.find_element("首页弹窗确认").click()
+    time.sleep(10)
+    print(dr.is_alter_present())
+    dr.find_element("首页图标").click()
+    #dr.close_brwser()
+    ----------------------1.5---common/screen------------------------
+    
+    from selenium import webdriver
+
+
+class Screen(object):
+    u'''返个应该截图功能的装饰器'''
+
+    def __init__(self, driver):
+        self.driver = driver
+
+    def __call__(self, f):
+        def inner(*args):
+            try:
+                return f(*args)
+            except:
+                import time
+                nowTime = time.strftime("%Y_%m_%d_%H_%M_%S")
+                self.driver.get_screenshot_as_file('%s.jpg' % nowTime)
+                raise
+        return inner
+
+
+        
+      ----------------------2.1---page/homepage------------------------
+      
+
+from common.basepage import BasePage
+from time import sleep
+
+class HomePage(BasePage):
+    # 进入网站首页，传入站点名称即可
+    def link_home_page(self, website=1):
+        if website ==1:
+            self.link_page("http://rnd-suptest.huawei.com/enrobot")  # 企业英文测试前台
+        elif website == 2:
+            self.link_page("http://support-trial.huawei.com/enrobot")  # 企业英文蓝环境前台
+        elif website == 3:
+            self.link_page("http://support.huawei.com/enrobot")  # 企业英文生产前台
+        elif website == 4:
+            self.link_page("http://support.huawei.com/iknow")  # 企业英文生产前台（对外）
+
+    # 点击首页右下角的all，刷新为全部分类
+    def refresh_category_all(self):
+        self.driver.current_driver.switch_to.frame(0)
+        self.driver.find_element("all").click()
+
+    def click_category(self,categoryName):
+        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
+        self.link_home_page(4)
+        sleep(3)
+        # 点击右侧的Enterprise Access
+        self.switch_to_iframe(0)
+        self.switch_to_iframe("hwIframe2")
+        self.switch_to_iframe(0)
+        self.driver.find_element(categoryName).click()
+        # 跳出iframe
+        self.switch_to_back_default_iframe()
+
+    def left_part_content(self):
+        # 获取左侧iframe内容
+        self.switch_to_iframe(0)
+        self.switch_to_iframe("hwIframe2")
+        left_content = self.driver.find_element("left iframe content").text
+        # 跳出iframe
+        self.switch_to_back_default_iframe()
+        return left_content
+
+    def common_quesions(self):
+        # 获取左侧common questions内容
+        self.switch_to_iframe(0)
+        self.switch_to_iframe("hwIframe2")
+        common_content = self.driver.find_element("common questions").text
+        # 跳出iframe
+        self.switch_to_back_default_iframe()
+        return common_content
+
+    def below__category_content(self):
+        # 获取下方产品线内容
+        self.switch_to_iframe(0)
+        self.switch_to_iframe("hwIframe2")
+        below_content = self.driver.find_element("below_content").text
+        # 跳出iframe
+        self.switch_to_back_default_iframe()
+        return below_content
+
+    def ask_question(self,question):
+        # 定位下方的输入框，并输入标准问题
+        self.switch_to_iframe(0)
+        self.switch_to_iframe("hwIframe2")
+        self.driver.find_element("Input box").send_keys(question)
+        self.driver.find_element("send").click()
+
+        # 跳出iframe
+        self.switch_to_back_default_iframe()
+
+
+if __name__ == '__main__':
+    homePage = HomePage()
+    homePage.link_home_page(4)
+    print("a")
+
+
+     ----------------------2.2---page/mofrontpage------------------------
+from common.basepage import BasePage
+import time
+
+
+class Example(BasePage):   #页面的名称，继承BasePage这个类
+    def link_example_page(self):    #进入这个页面的方法
+        self.link_page("http://support-trial.huawei.com/iknow/")
+
+    def click_sort(self):
+        self.driver.find_element("enterprise access").click()
+
+if __name__ == '__main__': #这个是调试你这个类的方法
+    '''
+    实例化/创建这个类的对象，有对象了你才能调用这个类的方法，“对象名”就代表了方法里面的self
+    1代表谷歌，2代表会，3代表IE
+    '''
+    duixiangming = Example(1)
+
+    duixiangming.link_example_page() #调用了你进入这个页面的方法，点击运行，就会进去这个页面了
+    time.sleep(2)
+    duixiangming.click_sort()
+
+    duixiangming.close_current_page()
+    
+----------------------3---logfile/log无变化------------------------
 import logging
 import os
 import time
@@ -306,188 +546,64 @@ if __name__ == '__main__':
     log.info('操作步骤1，2，3')
     log.warning('测试结束')
     print(log.logname)
+    ----------------------4.1---result/init.py------------------------
+    kong
+    ----------------------4.2---result/HTMLTestReport.html------------------------
     
-    ----------------------1.5---log/readconfig------------------------
+     ----------------------4.3---result/HTMLTestRunner.py------------------------
     
-    import xml.etree.cElementTree as ET
+    ----------------------4.4---result/testresult.py------------------------
+    from result.HTMLTestRunner import HTMLTestRunner
+import unittest
 
 
-class ReadConfig:
+class TestResult:
+    suite = unittest.TestSuite()
 
-    def __init__(self):
-        xml_file_path = 'C:\\Users\\monitor\\PycharmProjects\\UIAuto\\testFile\\config.xml'
-        self.tree = ET.parse(xml_file_path)
-        self.root = self.tree.getroot()
+    def get_html_report(self):
+        with open("D:\\MLUIproject-master\\result\\HTMLTestReport.html", 'w', encoding='utf-8') as f:
+            runner = HTMLTestRunner(stream=f, title='前台问答自动化测试报告', description='generated by htmlTestReport', verbosity=3)
+            runner.run(self.suite)
 
-    # def xml_pathType(self):
-    #     for path_type in self.root.iter('name'):
-    #         return (path_type.text)
-    def get_element_method(self):
-        list = []
-        for children in self.root.findall('element'):
-            name = children.find('name').text
-            path_type = children.find('pathType').text
-            path_value = children.find('pathValue').text
-            t = [name, path_type, path_value]
-            list.append(t)
-        return list
-
-    def getPathType(self, name):
-        list = ReadConfig().get_element_method()
-        for i in list:
-            if i[0] == name:
-                return i[1]
-
-    def getPathValue(self, name):
-        list = ReadConfig().get_element_method()
-        for i in list:
-            if i[0] == name:
-                return i[2]
+    def get_text_result(self):
+        with open("D:\\MLUIproject-master\\result\\textTestResult.txt", 'a', encoding='utf-8') as f:
+            runner = unittest.TextTestRunner(stream=f, descriptions='generated by textTestReport', verbosity=2)
+            runner.run(self.suite)
 
 
-if __name__ == '__main__':
-    r1 = ReadConfig()
-    print(r1.get_element_method())
-    print(r1.getPathType('email'))
-    print(r1.getPathValue('email'))
-
-----------------------1.6---log/screen------------------------
-
-from selenium import webdriver
+if __name__ == "__main__":
+    unittest.main()
 
 
-class Screen(object):
-    u'''返个应该截图功能的装饰器'''
-
-    def __init__(self, driver):
-        self.driver = driver
-
-    def __call__(self, f):
-        def inner(*args):
-            try:
-                return f(*args)
-            except:
-                import time
-                nowTime = time.strftime("%Y_%m_%d_%H_%M_%S")
-                self.driver.get_screenshot_as_file('%s.jpg' % nowTime)
-                raise
-        return inner
-        
-      ----------------------2.1---page/homepage------------------------
-      
-      
-from common.basepage import BasePage
-from common.driver import Driver
-from time import sleep
-
-class HomePage(BasePage):
-    # 进入网站首页，传入站点名称即可
-    def link_home_page(self, website=1):
-        if website ==1:
-            self.link_page("http://rnd-suptest.huawei.com/enrobot")  # 企业英文测试前台
-        elif website == 2:
-            self.link_page("http://support-trial.huawei.com/enrobot")  # 企业英文蓝环境前台
-        elif website == 3:
-            self.link_page("http://support.huawei.com/enrobot")  # 企业英文生产前台
-        elif website == 4:
-            self.link_page("http://support.huawei.com/iknow")  # 企业英文生产前台（对外）
-
-    # 点击首页右下角的all，刷新为全部分类
-    def refresh_category_all(self):
-        self.driver.current_driver.switch_to.frame(0)
-        self.driver.find_element("all").click()
-
-    def click_category(self,categoryName):
-        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
-        self.link_home_page(4)
-        sleep(3)
-        # 点击右侧的Enterprise Access
-        self.switch_to_iframe(0)
-        self.switch_to_iframe("hwIframe2")
-        self.switch_to_iframe(0)
-        self.driver.find_element(categoryName).click()
-
-        # 跳出iframe
-        self.switch_to_back_default_iframe()
-
-    def left_part_content(self):
-        # 获取左侧iframe内容
-        self.switch_to_iframe(0)
-        self.switch_to_iframe("hwIframe2")
-        left_content = self.driver.find_element("left iframe content").text
-        return left_content
-
-        # 跳出iframe
-        self.switch_to_back_default_iframe()
-
-    def below__category_content(self):
-        # 获取下方产品线内容
-        self.switch_to_iframe(0)
-        self.switch_to_iframe("hwIframe2")
-        below_content = self.driver.find_element("below_content").text
-        return below_content
-
-        # 跳出iframe
-        self.switch_to_back_default_iframe()
-
-    def ask_question(self,question):
-        # 定位下方的输入框，并输入标准问题
-        self.switch_to_iframe(0)
-        self.switch_to_iframe("hwIframe2")
-        self.driver.find_element("Input box").send_keys(question)
-        self.driver.find_element("send").click()
-
-        # 跳出iframe
-        self.switch_to_back_default_iframe()
-
-
-if __name__ == '__main__':
-    homePage = HomePage()
-    homePage.link_home_page(1)
-    print("a")
-    homePage.refresh_category_all()
-    sleep(2)
-    print("b")
-    homePage.close_current_page()
-    print("c")
-
-----------------------3---result无变化------------------------
-
-----------------------4.1---testCaseFront/test001------------------------
-
-from selenium import webdriver
-from common.basepage import BasePage
-from common.driver import Driver
-from common.elementRead import ElementsRead
+----------------------5.1---testCaseFront/test001------------------------
 from page.homepage import HomePage
-from common.log import Log
+from logfile.log import Log
 import unittest
 from time import sleep
 
 # test001:欢迎语是否推送,以及内容的正确性
-class FrontTest(unittest.TestCase):
-    front_page = HomePage()
+class Test001(unittest.TestCase):
+    # 实例化一个HomePage对象,定义为Test001的属性
+    test001 = HomePage()
 
     def setUp(self):
-        # 实例化一个HomePage对象,定义为Test001的属性
         self.log = Log()
         self.log.info("测试开始：front test")
+        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
+        self.test001.link_home_page(4)
 
     def test_001(self):
-        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
-        self.front_page.link_home_page(4)
-
         # 获取登录状态（text = login为未登录，text = logout 为已登录）
-        self.front_page.driver.current_driver.switch_to.frame(0)
-        self.front_page.driver.current_driver.switch_to.frame("hwIframe1")
-        status_login = self.front_page.driver.element_is_exist("login")
+        self.test001.switch_to_iframe(0)
+        self.test001.switch_to_iframe("hwIframe1")
+        status_login = self.test001.driver.element_is_exist("login")
 
         # 跳出iframe
-        self.front_page.switch_to_back_default_iframe()
+        self.test001.switch_to_back_default_iframe()
 
         # 获取欢迎语内容
         sleep(3)
-        welcome_content = self.front_page.left_part_content()
+        welcome_content = self.test001.left_part_content()
 
         # 断言
         if status_login == True:
@@ -497,63 +613,44 @@ class FrontTest(unittest.TestCase):
             self.assertNotIn("Log in", welcome_content)
             print("登录，欢迎语内容正确")
 
-    def test_004(self):
-        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
-        self.front_page.link_home_page(4)
-
-        sleep(1)
-        # 点击右侧的Enterprise Access
-        self.front_page.click_category("enterprise Access")
-
-        # 获取下方产品线内容
-        sleep(2)
-        below_category_content = self.front_page.below__category_content()
-
-        # 断言
-        self.assertIn("Enterprise Access", below_category_content)
-        print("自动识别产品线成功")
-
 
     def tearDown(self):
         self.log.info('结束测试：test')
         sleep(2)
-        self.front_page.close_current_page()
+        self.test001.close_current_page()
 
 if __name__ == '__main__':
     unittest.main()
 
-----------------------4.2---testCaseFront/test004------------------------
 
 
-from selenium import webdriver
-from common.basepage import BasePage
-from common.driver import Driver
-from common.elementRead import ElementsRead
+----------------------5.2---testCaseFront/test004------------------------
+
+
 from page.homepage import HomePage
-from common.log import Log
+from logfile.log import Log
 import unittest
 from time import sleep
 
 # test004:点击分类到Enterprise Access，下方识别产品线
 class Test004(unittest.TestCase):
+    # 实例化一个HomePage对象,定义为Test004的属性
     test004 = HomePage()
 
     def setUp(self):
-        # 实例化一个HomePage对象,定义为Test004的属性
         self.log = Log()
         self.log.info("测试开始：test004")
-
-    def test_004(self):
         # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
         self.test004.link_home_page(4)
 
+    def test_004(self):
         sleep(1)
         # 点击右侧的Enterprise Access
-        self.test004.click_category("enterprise Access")
+        self.test004.click_category("Enterprise Access")
 
         # 获取下方产品线内容
         sleep(2)
-        below_category_content = self.test004.below__category_content()
+        below_category_content = self.ttest004.below__category_content()
 
         # 断言
         self.assertIn("Enterprise Access", below_category_content)
@@ -567,59 +664,373 @@ class Test004(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
-----------------------5.1---testFile/config.xml------------------------
+---------------------5.3---testCaseFront/test005------------------------
+
+from page.homepage import HomePage
+from logfile.log import Log
+import unittest
+from time import sleep
+
+# test005:选择分类后推送常见问题
+class Test005(unittest.TestCase):
+    # 实例化一个HomePage对象,定义为Test005的属性
+    test005 = HomePage()
+
+    def setUp(self):
+        self.log = Log()
+        self.log.info("测试开始：test005")
+
+    def test_005(self):
+        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
+        self.test005.link_home_page(4)
+        sleep(3)
+        # 点击右侧的Enterprise Storage
+        self.test005.click_category("Enterprise Storage")
+
+        # 获取左侧iframe内容
+        sleep(2)
+        category_content = self.test005.left_part_content()
+
+        # 断言
+        self.assertIn("Common questions and topics",category_content)
+        print(category_content)
+
+    def tearDown(self):
+        self.log.info('结束测试：test005')
+        sleep(2)
+        self.test005.close_current_page()
+
+if __name__ == '__main__':
+    unittest.main()
+
+---------------------5.4---testCaseFront/test007------------------------
+from page.homepage import HomePage
+from logfile.log import Log
+import unittest
+from time import sleep
+
+# test007:点击/输入一条常用标准问题，出现答案，点击下方相关问
+class Test007(unittest.TestCase):
+    # 实例化一个HomePage对象,定义为Test007的属性
+    test007 = HomePage()
+
+    def setUp(self):
+        self.log = Log()
+        self.log.info("测试开始：test007")
+
+    def test_007(self):
+        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
+        self.test007.link_home_page(4)
+        sleep(3)
+
+        # 定位下方的输入框，并输入标准问题
+        self.test007.ask_question("Access Network 10G GPON Features Introduction")
+        sleep(2)
+
+        # 获取左侧iframe页面的内容
+        category_content = self.test007.left_part_content()
+
+        # 断言
+        self.assertIn("Other related questions",category_content)
+        print(category_content)
+
+        # 跳出iframe
+        self.test007.switch_to_back_default_iframe()
+
+    def tearDown(self):
+        self.log.info('结束测试：test007')
+        sleep(2)
+        self.test007.close_current_page()
+
+if __name__ == '__main__':
+    unittest.main()
+
+
+---------------------5.5---testCaseFront/test008------------------------
+
+from page.homepage import HomePage
+from logfile.log import Log
+import unittest
+from time import sleep
+
+# test008:输入内容，不再触发建议问
+class Test008(unittest.TestCase):
+    # 实例化一个HomePage对象,定义为Test008的属性
+    test008 = HomePage()
+
+    def setUp(self):
+        self.log = Log()
+        self.log.info("测试开始：test008")
+        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
+        self.test008.link_home_page(4)
+        sleep(3)
+
+    def test_008(self):
+        # 定位下方的输入框，并输入标准问题
+        self.test008.ask_question("supporting bems on OceanStor V3 product")
+        sleep(2)
+
+        # 获取左侧iframe页面的内容
+        category_content = self.test008.left_part_content()
+
+        # 断言
+        self.assertNotIn("Is this what you are looking for",category_content)
+        print(category_content)
+
+        # 跳出iframe
+        self.test008.switch_to_back_default_iframe()
+
+    def tearDown(self):
+        self.log.info('结束测试：test008')
+        sleep(2)
+        self.test008.close_current_page()
+
+if __name__ == '__main__':
+    unittest.main()
+
+
+---------------------5.6---testCaseFront/test009------------------------
+
+from page.homepage import HomePage
+from logfile.log import Log
+import unittest
+from time import sleep
+
+
+# test009:点击/输入一条常用标准问题，出现答案，点击已解决
+class Test009(unittest.TestCase):
+    # 实例化一个HomePage对象,定义为Test009的属性
+    test009 = HomePage()
+
+    def setUp(self):
+        self.log = Log()
+        self.log.info("测试开始：test009")
+
+    def test_009(self):
+        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
+        self.test009.link_home_page(4)
+        sleep(3)
+
+        # 定位下方的输入框，并输入标准问题
+        self.test009.ask_question("Access Network 10G GPON Features Introduction")
+        sleep(2)
+
+        # 点击已解决
+        self.test009.switch_to_iframe(0)
+        self.test009.switch_to_iframe("hwIframe2")
+        self.test009.driver.find_element("solved").click()
+        sleep(1)
+        # 跳出iframe
+        self.test009.switch_to_back_default_iframe()
+
+        # 获取左侧iframe页面的内容
+        category_content = self.test009.left_part_content()
+
+        # 断言
+        self.assertIn("Thanks for your support!", category_content)
+        print(category_content)
+
+    def tearDown(self):
+        self.log.info('结束测试：test009')
+        sleep(2)
+        self.test009.close_current_page()
+
+
+if __name__ == '__main__':
+    unittest.main()
+
+
+---------------------5.7---testCaseFront/test010------------------------
+from page.homepage import HomePage
+from logfile.log import Log
+import unittest
+from time import sleep
+
+
+# test010:点击/输入一条常用标准问题，出现答案，点击未解决
+class Test010(unittest.TestCase):
+    # 实例化一个HomePage对象,定义为Test0010的属性
+    test010 = HomePage()
+
+    def setUp(self):
+        self.log = Log()
+        self.log.info("测试开始：test010")
+
+    def test_010(self):
+        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
+        self.test010.link_home_page(4)
+        sleep(3)
+
+        # 定位下方的输入框，并输入标准问题
+        self.test010.ask_question("ManageOne ServiceCenter FAQs")
+        sleep(2)
+
+        # 点击未解决
+        self.test010.switch_to_iframe(0)
+        self.test010.switch_to_iframe("hwIframe2")
+        self.test010.driver.find_elements('solved')[1].click()
+        sleep(5)
+        # 跳出iframe
+        self.test010.switch_to_back_default_iframe()
+
+        # 获取左侧iframe页面的内容
+        category_content = self.test010.left_part_content()
+
+        # 断言
+        self.assertIn("Your Feedback is Appreciated", category_content)
+        print(category_content)
+
+    def tearDown(self):
+        self.log.info('结束测试：test010')
+        sleep(2)
+        self.test010.close_current_page()
+
+
+if __name__ == '__main__':
+    unittest.main()
+
+---------------------5.8---testCaseFront/test011------------------------
+
+from page.homepage import HomePage
+from logfile.log import Log
+import unittest
+from time import sleep
+
+# test011:发送聊天信息
+class Test011(unittest.TestCase):
+    # 实例化一个HomePage对象,定义为Test011的属性
+    test011 = HomePage()
+
+    def setUp(self):
+        self.log = Log()
+        self.log.info("测试开始：test011")
+
+    def test_011(self):
+        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
+        self.test011.link_home_page(4)
+        sleep(3)
+
+        # 定位下方的输入框，并输入标准问题
+        self.test011.ask_question("hello")
+        sleep(2)
+
+        # 获取左侧iframe页面的内容
+        category_content = self.test011.left_part_content()
+
+        # 断言
+        self.assertIn("what can I do for you",category_content)
+        print(category_content)
+
+    def tearDown(self):
+        self.log.info('结束测试：test011')
+        sleep(2)
+        self.test011.close_current_page()
+
+if __name__ == '__main__':
+    unittest.main()
+
+
+---------------------5.9---testCaseFront/test012------------------------
+from page.homepage import HomePage
+from logfile.log import Log
+import unittest
+from time import sleep
+
+# test012:故障树交互功能
+class Test012(unittest.TestCase):
+    # 实例化一个HomePage对象,定义为Test012的属性
+    test012 = HomePage()
+
+    def setUp(self):
+        self.log = Log()
+        self.log.info("测试开始：test0012")
+
+    def test_012(self):
+        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
+        self.test012.link_home_page(4)
+        sleep(3)
+
+        # 定位下方的输入框，并输入故障树语料
+        self.test012.ask_question("A BGP Peer Relationship Cannot Be Established")
+        sleep(2)
+
+        # 获取右侧iframe页面的内容
+        self.test012.switch_to_iframe(0)
+        self.test012.switch_to_iframe("hwIframe2")
+        self.test012.switch_to_iframe("gzqslP4")
+        status = self.test012.driver.element_is_exist("guzhangshu")
+
+
+        # 断言:故障树的图片元素存在状态为True
+        self.assertAlmostEqual(status,True)
+
+        # 跳出iframe
+        self.test012.switch_to_back_default_iframe()
+
+    def tearDown(self):
+        self.log.info('结束测试：test012')
+        sleep(2)
+        self.test012.close_current_page()
+
+if __name__ == '__main__':
+    unittest.main()
+---------------------5.10---testCaseFront/test014------------------------
+from page.homepage import HomePage
+from logfile.log import Log
+import unittest
+from time import sleep
+
+# test014:自动识别产品线（选择其他分类）
+class Test014(unittest.TestCase):
+    # 实例化一个HomePage对象,定义为Test014的属性
+    test014 = HomePage()
+
+    def setUp(self):
+        self.log = Log()
+        self.log.info("测试开始：test0014")
+
+    def test_014(self):
+        # 打开企业英文生产对外前台页面，并且最大化，website = 4时为打开生产对外前台
+        self.test014.link_home_page(4)
+        sleep(3)
+
+        # 点击右侧的Enterprise Access
+        self.test014.click_category("Enterprise Access")
+        sleep(1)
+
+        # 定位下方的输入框，并输入Enterprise Data Center Switch分类中的语料
+        self.test014.ask_question("Why an ISSU upgrade fails on a CE series switch")
+        sleep(1)
+
+        # 获取左侧iframe页面的内容
+        category_content = self.test014.left_part_content()
+
+        # 断言
+        self.assertIn("I found the answer in: Data Center Switch",category_content)
+
+    def tearDown(self):
+        self.log.info('结束测试：test014')
+        sleep(2)
+        self.test014.close_current_page()
+
+if __name__ == '__main__':
+    unittest.main()
+
+
+
+----------------------6.1---testFile/config.xml------------------------
 
 <?xml version="1.0" encoding="UTF-8"?>
 <page>
-    <element>
-        <name>百度搜索输入框</name>
-        <pathType>id</pathType>
-        <pathValue>kw</pathValue>
-    </element>
-    <element page = "首页">
-        <name>首页图标</name>
-        <pathType>class_name</pathType>
-        <pathValue>logo-cont</pathValue>
-    </element>
-    <element page = "首页">
-        <name>首页弹窗</name>
-        <pathType>xpath</pathType>
-        <pathValue>.//*[@id='modal']</pathValue>
-    </element>
-    <element page = "首页">
-        <name>首页年龄弹窗确认</name>
-        <pathType>xpath</pathType>
-        <pathValue>.//*[@id='modal']/div[2]/a</pathValue>
-    </element>
-    <element page ="首页">
-        <name>首页signin按钮</name>
-        <pathType>class_name</pathType>
-        <pathValue>go-login</pathValue>
-    </element>
-    <element page ="首页">
-        <name>首页signup按钮</name>
-        <pathType>class_name</pathType>
-        <pathValue>go-sign</pathValue>
-    </element>
-    <element page ="登录页">
-        <name>用户名输入框</name>
-        <pathType>name</pathType>
-        <pathValue>email</pathValue>
-    </element>
-    <element page = "登录页">
-        <name>密码输入框</name>
-        <pathType>name</pathType>
-        <pathValue>password</pathValue>
-    </element>
-     <element page = "登录页">
-        <name>登录提交按钮</name>
-        <pathType>xpath</pathType>
-        <pathValue>.//*[@id='wrapper']/div[2]/div[2]/div[2]/div[7]</pathValue>
-    </element>
     <element page = "enterprise 生产前台">
-        <name>enterprise Access</name>
+        <name>Enterprise Access</name>
         <pathType>xpath</pathType>
         <pathValue>//*[@id="datacom"]/a[1]</pathValue>
+    </element>
+    <element page = "enterprise 生产前台">
+        <name>Enterprise Storage</name>
+        <pathType>xpath</pathType>
+        <pathValue>//*[@id="it"]/a[3]</pathValue>
     </element>
     <element page = "enterprise 生产前台">
         <name>all</name>
@@ -653,13 +1064,13 @@ if __name__ == '__main__':
     </element>
     <element page = "enterprise 生产前台">
         <name>left iframe content</name>
-        <pathType>id</pathType>
-        <pathValue>outputArea</pathValue>
+        <pathType>xpath</pathType>
+        <pathValue>//*[@id="outputArea"]</pathValue>
     </element>
     <element page = "enterprise 生产前台">
-        <name>common question</name>
-        <pathType>id</pathType>
-        <pathValue>submitLink</pathValue>
+        <name>common questions</name>
+        <pathType>xpath</pathType>
+        <pathValue>//*[@id="outputArea"]/dl[17]/dd/div/div</pathValue>
     </element>
     <element page = "enterprise 生产前台">
         <name>Input box</name>
@@ -686,8 +1097,39 @@ if __name__ == '__main__':
         <pathType>xpath</pathType>
         <pathValue>//*[@id="abgp_peer_setup_failure_desk000__fig01"]/div/div/img</pathValue>
     </element>
+    <element page = "enterprise 生产前台">
+        <name>video</name>
+        <pathType>xpath</pathType>
+        <pathValue>//*[@id="outputArea"]/dl[4]/dd/div/p[1]/span</pathValue>
+    </element>
+    <element page = "enterprise 生产前台">
+        <name>kg</name>
+        <pathType>xpath</pathType>
+        <pathValue>//*[@id="outputArea"]/dl[11]/dd/div/div[2]/ul/li[2]/a</pathValue>
+    </element>
+    <element page = "enterprise 生产前台">
+        <name>p4</name>
+        <pathType>xpath</pathType>
+        <pathValue>//*[@id="activityTabTitle"]</pathValue>
+    </element>
+    <element page = "enterprise 生产前台">
+        <name>weibao</name>
+        <pathType>xpath</pathType>
+        <pathValue>//*[@id="activityTabTitle"]</pathValue>
+    </element>
+    <element page = "enterprise 生产前台">
+        <name>beijian</name>
+        <pathType>xpath</pathType>
+        <pathValue>//*[@id="activityTabTitle"]</pathValue>
+    </element>
+    <element page = "enterprise 生产前台">
+        <name>no</name>
+        <pathType>css_selector</pathType>
+        <pathValue>#submitLink > span</pathValue>
+    </element>
 </page>
-----------------------6---runAllTestCase------------------------
+
+----------------------7--runAllTestCase------------------------
 
 from testCaseFront.test001 import FrontTest
 from testCaseFront.test004 import Test004
@@ -715,4 +1157,24 @@ def run():
 
 run()
 
+-------------------------------------
+Tools:
+import pandas
 
+# 这个小工具，用于将txt文件中（由jmeter脚本提取响应参数输出）的内容，转化到csv文件中，方便筛选
+with open("C:\\Users\\cwx628476\\Desktop\\123.txt") as txt_file:
+    text = txt_file.readlines()
+    r = text[0].split("++")
+    question = []
+    standardQuestion = []
+    content = []
+    for line in r:
+        line = line.split(":")
+        if line[0] == "question":
+            question.append(line[1])
+        if line[0] == "standardQuestion":
+            standardQuestion.append(line[1])
+        if line[0] == "content":
+            content.append(line[1])
+    data = pandas.DataFrame({"question": question, "standardQuestion": standardQuestion, "content": content})
+    data.to_csv("C:\\Users\\cwx628476\\Desktop\\123.csv", index=False, sep=",")
